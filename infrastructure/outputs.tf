@@ -18,3 +18,30 @@ output "zone_id" {
     description = "Route 53 hosted zone ID"
     value = module.dns.zone_id
 }
+
+# Networking outputs
+output "vpc_id" {
+    description = "VPC ID"
+    value = module.networking.vpc_id
+}
+
+output "public_subnet_ids" {
+    description = "Public subnet IDs"
+    value = module.networking.public_subnet_ids
+}
+
+# Compute outputs
+output "ec2_instance_id" {
+    description = "EC2 instance ID"
+    value = module.compute.instance_id
+}
+
+output "ec2_public_ip" {
+    description = "EC2 instance public IP"
+    value = module.compute.instance_public_ip
+}
+
+output "ssh_command" {
+    description = "SSH command to connect to instance"
+    value = "ssh -i yogapriya-key ec2-user@${module.compute.instance_public_ip}"
+}

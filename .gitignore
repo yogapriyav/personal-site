@@ -53,3 +53,12 @@ kubernetes/secrets/
 # IDE
 .vscode/
 .idea/
+
+# SSH keys (NEVER commit private keys)
+infrastructure/keys/yogapriya-key
+infrastructure/keys/*.pem
+infrastructure/keys/*.key
+
+# Keep public keys (safe to commit)
+!infrastructure/keys/yogapriya-key.pub
+!infrastructure/keys/*.pub
