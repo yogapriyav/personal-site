@@ -1,0 +1,34 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: personal-site-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod" # Request cert
+    traefik.ingress.kubernetes.io/redirect-entry-point: https # Redirect http to https
+spec:
+  tls:
+  - hosts:
+    - yogapriyaveturi.com
+    - www.yogapriyaveturi.com
+    secretName: yogapriya-tls # where we store the cert
+  rules:
+  - host: yogapriyaveturi.com
+    http: 
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: yogapriya-site
+            port:
+              number: 80
+  - host: www.yogapriyaveturi.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: yogapriya-site
+            port:
+              number: 80

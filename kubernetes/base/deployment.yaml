@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yogapriya-site
+  labels:
+    app: yogapriya-site
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: yogapriya-site
+  template:
+    metadata:
+      labels:
+        app: yogapriya-site
+    spec:
+      containers:
+      - name: nextjs
+        image: yogapriyav/yogapriya-site:latest
+        ports:
+        - containerPort: 3000
+          name: http
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        livenessProbe:
+          httpGet:
+            path: /about
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /about
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
