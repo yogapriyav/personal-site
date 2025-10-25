@@ -32,6 +32,30 @@ resource "aws_instance" "web" {
     user_data = <<-EOF
                 #!/bin/bash
                 hostnamectl set-hostname ${var.project_name}-server
+
+                # Create swap file (2GB)
+                dd if=/dev/zero of=/swapfile bs=1M count=2048
+                chmod 600 /swapfile
+                mkswap /swapfile
+                swapon /swapfile
+                echo '/swapfile none swap sw 0 0' >> /etc/fstab
+
+                # Install k3s with public IP in cert
+                curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC='--kube-apiserver-arg service-node-port-range=80-32767 sh -
+
+                # Wait for k3s to be ready
+                sleep 10
+
+                # Make kubeconfig readable
+                chmod 644 /etc/rancher/k3s/k3s.yaml
+
+                # Set KUBECONFIG for all users
+                echo 'export KUBECONFIG=/etc/rancher/k3s/k3s.yaml' >> /etc/profile.d/k3s.sh
+
+                # Set for ec2-user specifically
+                echo 'export KUBECONFIG=/etc/rancher/k3s/k3s.yaml' >> /home/ec2-user/.bashrc
+                chown ec2-user:ec2-user /home/ec2-user/.bashrc
+
                 EOF
 
     tags = {
@@ -41,6 +65,7 @@ resource "aws_instance" "web" {
     # Prevent accidental termination
     lifecycle {
         prevent_destroy = false # Set to true in production
+        ignore_changes = [ ami ]
     }
 }
 

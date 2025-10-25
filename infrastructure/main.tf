@@ -6,6 +6,10 @@ terraform {
             source = "hashicorp/aws"
             version = "~> 5.0"
         }
+        null = {
+            source = "hashicorp/null"
+            version = "~> 3.0"
+        }
     }
 }
 
@@ -20,13 +24,6 @@ provider "aws" {
             Environment = var.environment
         }
     }
-}
-
-# DNS module
-module "dns" {
-    source = "./modules/dns"
-    domain_name = var.domain_name
-    project_name = var.project_name
 }
 
 # Networking module
@@ -47,4 +44,12 @@ module "compute" {
     security_group_id = module.networking.security_group_id
     key_name = aws_key_pair.main.key_name
     instance_type = "t3.micro"
+}
+
+# DNS module
+module "dns" {
+    source = "./modules/dns"
+    domain_name = var.domain_name
+    project_name = var.project_name
+    ec2_public_ip = module.compute.instance_public_ip
 }

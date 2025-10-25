@@ -103,6 +103,15 @@ resource "aws_security_group" "web" {
         description = "Kubernetes API"
     }
 
+    # NodePort range for k3s services
+    ingress {
+        from_port = 30080
+        to_port = 30080
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+        description = "NodePort for Next.js service"
+    }
+    
     # All outbound traffic
     egress {
         from_port = 0
