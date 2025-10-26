@@ -1,9 +1,13 @@
-name: Build and Deployment
+name: Build and Deploy application
 
 on:
   push:
     branches: [ main ]
-  workflow_dispatch: #allows manual trigger?
+    paths:
+      - 'app/*'
+      - 'kubernetes/**'
+      - '.github/workflows/app-deploy.yml'
+  workflow_dispatch: #allows manual trigger
 
 env:
   DOCKER_IMAGE: yogapriyav/yogapriya-site
