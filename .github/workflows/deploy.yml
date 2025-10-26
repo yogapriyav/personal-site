@@ -40,8 +40,8 @@ jobs:
         tags: |
           ${{ env.DOCKER_IMAGE }}:latest
           ${{ env.DOCKER_IMAGE }}:${{ github.sha }}
-        cache-from: type=registry, ref=${{ env.DOCKER_IMAGE }}:latest
-        cache-to: type=inline
+        # cache-from: type=registry, ref=${{ env.DOCKER_IMAGE }}:latest
+        # cache-to: type=inline
 
     # Setup kubectl
     - name: Set up kubectl
