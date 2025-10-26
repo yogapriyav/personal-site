@@ -23,6 +23,12 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: Setup SSH key
+      run: |
+        mkdir -p infrastructure/keys
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 -d > infrastructure/keys/yogapriya-key
+        chmod 600 infrastructure/keys/yogapriya-key
+
     - name: Setup terraform
       uses: hashicorp/setup-terraform@v3
       with:
