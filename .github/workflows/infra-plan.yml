@@ -26,8 +26,8 @@ jobs:
     - name: Setup SSH key
       run: |
         mkdir -p keys
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 -d > infrastructure/keys/yogapriya-key
-        chmod 600 infrastructure/keys/yogapriya-key
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 -d > keys/yogapriya-key
+        chmod 600 keys/yogapriya-key
 
     - name: Setup terraform
       uses: hashicorp/setup-terraform@v3
