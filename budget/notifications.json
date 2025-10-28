@@ -1,0 +1,30 @@
+[
+  {
+    "Notification": {
+      "ComparisonOperator": "GREATER_THAN",
+      "NotificationType": "ACTUAL",
+      "Threshold": 80,
+      "ThresholdType": "PERCENTAGE"
+    },
+    "Subscribers": [
+      {
+        "SubscriptionType": "EMAIL",
+        "Address": "yogapriya.veturi@gmail.com"
+      }
+    ]
+  },
+  {
+    "Notification": {
+      "ComparisonOperator": "GREATER_THAN",
+      "NotificationType": "FORECASTED",
+      "Threshold": 100,
+      "ThresholdType": "PERCENTAGE"
+    },
+    "Subscribers": [
+      {
+        "SubscriptionType": "EMAIL",
+        "Address": "yogapriya.veturi@gmail.com"
+      }
+    ]
+  }
+]

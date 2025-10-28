@@ -4,6 +4,11 @@ data "aws_ami" "amazon_linux" {
     owners = ["amazon"]
 
     filter {
+      name = "name"
+      values = ["al2023-ami-2023.*-kernel-*-x86_64"]
+    }
+
+    filter {
       name = "virtualization-type"
       values = ["hvm"]
     }  
@@ -22,7 +27,7 @@ resource "aws_instance" "web" {
 
     # Root volume
     root_block_device {
-        volume_size = 20 # GB (free tier allows 30GB)
+        volume_size = 30 # GB (free tier allows 30GB)
         volume_type = "gp3"
         delete_on_termination = true
         encrypted = true
@@ -41,7 +46,7 @@ resource "aws_instance" "web" {
                 echo '/swapfile none swap sw 0 0' >> /etc/fstab
 
                 # Install k3s with public IP in cert
-                curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC='--kube-apiserver-arg service-node-port-range=80-32767 sh -
+                curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC='--kube-apiserver-arg service-node-port-range=80-32767' sh -
 
                 # Wait for k3s to be ready
                 sleep 10

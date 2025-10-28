@@ -9,6 +9,10 @@ on:
       - '.github/workflows/app-deploy.yml'
   workflow_dispatch: #allows manual trigger
 
+concurrency:
+  group: cluster-operations
+  cancel-in-progress: false  # Wait for other workflow to finish (depending in whichever is running)
+
 env:
   DOCKER_IMAGE: yogapriyav/yogapriya-site
   DEPLOYMENT_NAME: yogapriya-site

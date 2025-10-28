@@ -1,0 +1,22 @@
+{
+  "Changes": [
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "yogapriyaveturi.com",
+        "Type": "A",
+        "TTL": 300,
+        "ResourceRecords": [{"Value": "3.20.146.255"}]
+      }
+    },
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "www.yogapriyaveturi.com",
+        "Type": "A",
+        "TTL": 300,
+        "ResourceRecords": [{"Value": "3.20.146.255"}]
+      }
+    }
+  ]
+}

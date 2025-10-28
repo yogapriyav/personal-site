@@ -35,19 +35,6 @@ resource "null_resource" "update_k3s_cert" {
     }
     
     provisioner "local-exec" {
-        command =  <<-EOF
-            echo "Waiting for k3s to be fully ready..."
-            sleep 20
-
-            echo "Configuring Traefik to use NodePort 80"
-            kubectl patch svc traefik -n kube-system --patch-file ${path.module}/traefik-nodeport-config.yaml
-
-            echo "Traefik configured on port 80!"
-            kubectl get svc -n kube-system traefik
-        EOF
-    }
-
-    provisioner "local-exec" {
         command = <<-EOF
             echo "Downloading kubeconfig from ${module.compute.instance_public_ip}"
 
@@ -70,6 +57,46 @@ resource "null_resource" "update_k3s_cert" {
 
             # Test connection
             kubectl get nodes || echo "Error: kubectl test failed, but kubeconfig is downloaded at /tmp/k3s-config.yaml"
+        EOF
+    }
+
+    provisioner "local-exec" {
+        command =  <<-EOF
+            echo "Waiting for k3s to be fully ready..."
+            sleep 20
+
+            echo "Configuring Traefik to use NodePort 80"
+            kubectl patch svc traefik -n kube-system --patch-file ${path.module}/traefik-nodeport-config.yaml
+
+            echo "Traefik configured on port 80!"
+            kubectl get svc -n kube-system traefik
+
+            echo "Deploying application..."
+            kubectl apply -f ${path.module}/../kubernetes/base/deployment.yaml
+            kubectl apply -f ${path.module}/../kubernetes/base/service.yaml
+
+            echo "Installing cert-manager..."
+            kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.2/cert-manager.yaml
+            
+            echo "Waiting for cert-manager to be ready..."
+            kubectl wait --for=condition=ready pod -l app.kubernetes.io/instance=cert-manager -n cert-manager --timeout=300s
+
+            echo "Waiting additional time for webhook to initialize..."
+            sleep 30ß
+            
+            echo "Fixing CoreDNS to use external DNS..."
+            kubectl get configmap coredns -n kube-system -o yaml | \
+                sed 's|forward . /etc/resolv.conf|forward . 8.8.8.8 1.1.1.1|' | \
+                kubectl apply -f -
+
+            kubectl rollout restart deployment coredns -n kube-system
+
+            echo "Applying ClusterIssuer and Ingress..."
+            kubectl apply -f ${path.module}/../kubernetes/base/letsencrypt-issuer.yaml
+            kubectl apply -f ${path.module}/../kubernetes/base/ingress.yaml
+
+            echo "Setup complete!"
+
         EOF
     }
 
