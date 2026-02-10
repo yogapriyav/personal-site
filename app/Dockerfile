@@ -19,12 +19,18 @@ FROM node:22-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production 
 
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs && adduser -S nextjs -u 1001
+
 # Copy necessary files from builder
 COPY --from=builder /app/next.config.ts ./
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next ./.next
+COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
+
+# Switch to non-root user
+USER nextjs
 
 # Expose port 3000
 EXPOSE 3000
