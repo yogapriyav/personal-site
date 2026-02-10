@@ -43,7 +43,7 @@ module "compute" {
     subnet_id = module.networking.public_subnet_ids[0]
     security_group_id = module.networking.security_group_id
     key_name = aws_key_pair.main.key_name
-    instance_type = "t3.micro"
+    instance_type = "t3.small"
 }
 
 # DNS module
