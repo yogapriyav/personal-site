@@ -17,6 +17,11 @@ spec:
       containers:
       - name: nextjs
         image: yogapriyav/yogapriya-site:latest
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1001
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
         ports:
         - containerPort: 3000
           name: http
